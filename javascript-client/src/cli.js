@@ -1,6 +1,8 @@
 import net from 'net'
 import vorpal from 'vorpal'
 
+
+
 const cli = vorpal()
 
 // cli config
@@ -10,6 +12,7 @@ cli
 // connect mode
 let server
 let username = 'Unnamed User'
+
 
 cli
   .command('setname <username>')
@@ -58,6 +61,8 @@ cli
   .action(function (command, callback) {
     if (command === 'exit') {
       server.end()
+      callback()
+    } else if (command === 'username') {
       callback()
     } else {
       server.write(command + '\n')

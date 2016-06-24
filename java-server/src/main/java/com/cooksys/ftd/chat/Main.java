@@ -9,6 +9,9 @@ public class Main {
 	
 	static Logger log = LoggerFactory.getLogger(Main.class);
 	
+	//Don't really change this class
+	//BROADCAST FUCKIN MESSAGE
+	
 	public static void main(String[] args) {
 		Server server = new Server(667);
 		Thread serverThread = new Thread(server);
