@@ -5,27 +5,54 @@ const cli = vorpal()
 
 // cli config
 cli
-  .delimiter('ftd-chat~$')
+  .delimiter('>')
 
 // connect mode
 let server
+let username = 'Unnamed User'
 
 cli
-  .mode('connect [host] <port>')
-  .delimiter('connected:')
+  .command('setname <username>')
+  .action(function (args, callback) {
+    username = args['username']
+    this.log(`Successfully changed username to ${username}.`)
+    callback()
+  })
+
+cli
+  .mode('connect <port> [host]')
+  .delimiter('>')
   .init(function (args, callback) {
     server = net.createConnection(args, () => {
       const address = server.address()
-      this.log(`connected to server ${address.address}:${address.port}`)
+      this.log(`Connected to server ${address.address}:${address.port}`)
       callback()
     })
 
+    function getDate () {
+      let date = new Date()
+      let ampm = date.getHours() < 12
+        ? 'AM'
+        : 'PM'
+      let hours = date.getHours() % 12
+        ? date.getHours() % 12
+        : 12
+      let minutes = date.getMinutes() < 10
+        ? '0' + date.getMinutes()
+        : date.getMinutes()
+      let seconds = date.getSeconds() < 10
+        ? '0' + date.getSeconds()
+        : date.getSeconds()
+      let datestring = `${date.getMonth()}/${date.getDate()}/${date.getFullYear()}, ${hours}:${minutes}:${seconds} ${ampm}`
+      return datestring
+    }
+
     server.on('data', (data) => {
-      this.log(data.toString())
+      this.log(`${getDate()} - ${username}: ${data.toString()}`)
     })
 
     server.on('end', () => {
-      this.log('disconnected from server :(')
+      this.log('Disconnected from server.')
     })
   })
   .action(function (command, callback) {
